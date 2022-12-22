@@ -126,6 +126,13 @@ df_tidy <- pivot_longer(df,
 head(df_tidy)
 ```
 
+4.  Save the tidy dataframe.\
+
+```{r}
+df_tidy %>% write.csv("tidy_merged_data.csv", file.path(here("data", "processed_data")), row.names = FALSE)
+```
+
+
 ### Step3: Generate plot using ggplot.
 
 This uses the function ggplot function with the following arguments
