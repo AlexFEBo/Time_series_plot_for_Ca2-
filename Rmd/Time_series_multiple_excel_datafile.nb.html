@@ -1756,14 +1756,39 @@ files</h1>
 
 <!-- rnb-text-begin -->
 <p><strong>Aim</strong>: Create a figure panel for plotting continuous
-data.<br />
+data (time series).<br />
 Works for plotting Time series data from several data file (excel
 table).</p>
 <p><strong>Contact</strong>: <a href="mailto:alexandre.bokhobza@gmail.com" class="email">alexandre.bokhobza@gmail.com</a></p>
 <p><strong>Reference used for creating this notebook</strong>: Goedhart,
 J. (2022) DataViz protocols - An introduction to data visualization
 protocols for wet lab scientists, doi: <a href="https://zenodo.org/record/7257808#.Y6LaJXbMIQ8">10.5281/zenodo.7257808</a></p>
-<hr />
+<table>
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td align="left">### Important note:</td>
+</tr>
+<tr class="even">
+<td align="left">For the notebook to work you need to have your root
+folder structured as follow:</td>
+</tr>
+<tr class="odd">
+<td align="left"><!-- rnb-text-end --></td>
+</tr>
+<tr class="even">
+<td align="left"><!-- rnb-chunk-begin --></td>
+</tr>
+<tr class="odd">
+<td align="left"><!-- rnb-chunk-end --></td>
+</tr>
+<tr class="even">
+<td align="left"><!-- rnb-text-begin --></td>
+</tr>
+</tbody>
+</table>
 <div id="preparation-steps." class="section level3">
 <h3>Preparation steps.</h3>
 <ol style="list-style-type: decimal">
@@ -1774,176 +1799,289 @@ protocols for wet lab scientists, doi: <a href="https://zenodo.org/record/725780
 “install.packages(‘name_of_package’)”</em></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KGhlcmUpXG5gYGBcbmBgYCJ9 -->
+<pre class="r"><code>```r
+library(tidyverse)
 library(here)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="2" style="list-style-type: decimal">
-<li>Setting up the ‘Here’ package.</li>
-</ol>
-<p>The function “here()” is used to declare the location of the current
-script as the root for the project folder.<br />
-<em>As a consequence, no absolute path will be required anymore and the
-Notebook can be used on any machine given that the folder structure is
-respected).</em><br />
-More info can be found at: <a href="https://here.r-lib.org/articles/here.html">here</a></p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVyZTo6aV9hbShcIlByZWxpbWluYXJ5X1Bsb3RUd2lzdF9saWtlLlJcIilcbmBgYCJ9 -->
-<pre class="r"><code>here::i_am(&quot;Preliminary_PlotTwist_like.R&quot;)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="3" style="list-style-type: decimal">
-<li>Include session information.</li>
-</ol>
-<p>It is good practice to include session information</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxueGZ1bjo6c2Vzc2lvbl9pbmZvKClcbmBgYCJ9 -->
-<pre class="r"><code>xfun::session_info()</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="step-1-create-an-object-that-includes-the-path-to-the-data-files." class="section level3">
-<h3>Step 1: Create an object that includes the path to the data
-files.</h3>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YV9wYXRoIDwtIHBhc3RlKGhlcmUoXCJkYXRhXCIpLCBsaXN0LmZpbGVzKGhlcmUoXCJkYXRhXCIpKSwgc2VwID0gXCIvXCIpXG5oZWFkKGRhdGFfcGF0aClcbmBgYCJ9 -->
-<pre class="r"><code>data_path &lt;- paste(here(&quot;data&quot;), list.files(here(&quot;data&quot;)), sep = &quot;/&quot;)
-head(data_path)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="step-2-loading-reading-data-generate-a-nested-dataframe-dataframe-of-dataframes" class="section level3">
-<h3>Step 2: Loading (reading) data &amp; generate a ‘nested’ dataframe
-(dataframe of dataframes)</h3>
-<p>The data are loaded from the excel files using the function
-“readxl”.<br />
-The loaded data are included in an “R object” named ‘df_input’ using the
-character: ‘&lt;-’.<br />
-In addition, the first lanes of the object are visualized using the
-function “head”.<br />
-<em>Note: df stands for dataframe (type of data loaded)</em></p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfaW5wdXQgPC0gbWFwKGRhdGFfcGF0aCwgcmVhZHhsOjpyZWFkX2V4Y2VsKVxuaGVhZChkZl9pbnB1dClcbmBgYCJ9 -->
-<pre class="r"><code>df_input &lt;- map(data_path, readxl::read_excel)
-head(df_input)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="step-3-naming-the-loaded-dataframe-according-to-the-files-names." class="section level3">
-<h3>Step 3: Naming the loaded dataframe according to the files
-names.</h3>
-<p>This could be changed by a button to specify the desired name</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGZfaW5wdXQpIDwtIHN0cl9yZXBsYWNlKGxpc3QuZmlsZXMoaGVyZShcImRhdGFcIikpLCBwYXR0ZXJuID0gXCIueGxzeFwiLCByZXBsYWNlbWVudCA9IFwiXCIpXG5oZWFkKGRmX2lucHV0KVxuYGBgIn0= -->
-<pre class="r"><code>names(df_input) &lt;- str_replace(list.files(here(&quot;data&quot;)), pattern = &quot;.xlsx&quot;, replacement = &quot;&quot;)
-head(df_input)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="step4-merge-the-dataframes." class="section level3">
-<h3>Step4: Merge the dataframes.</h3>
-<p>A single dataframe with all data is generated.<br />
-A new column named ‘id’ is created to keep the origin of the date
-(initial filename).</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gYmluZF9yb3dzKGRmX2lucHV0LCAuaWQgPSAnaWQnKVxuaGVhZChkZilcbmBgYCJ9 -->
-<pre class="r"><code>df &lt;- bind_rows(df_input, .id = &#39;id&#39;)
-head(df)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="step5-reshaping-data-to-tidy-format" class="section level3">
-<h3>Step5: Reshaping data to tidy format</h3>
-<ol style="list-style-type: decimal">
-<li>Remove empty space in data frame and replace it by an
-underscore.<br />
-The function “str_replace” is used to replace a character string with
-another one.<br />
-Here the space ’ ’ is replaced by underscore ‘_’ with the arguments
-“pattern =” and “replacement =”.</li>
-</ol>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoZGYpIDwtIHN0cl9yZXBsYWNlKG5hbWVzKGRmKSwgcGF0dGVybiA9IFwiIFwiLCByZXBsYWNlbWVudCA9IFwiX1wiKVxuaGVhZChkZilcbmBgYCJ9 -->
-<pre class="r"><code>names(df) &lt;- str_replace(names(df), pattern = &quot; &quot;, replacement = &quot;_&quot;)
-head(df)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="2" style="list-style-type: decimal">
-<li>Give the generic name “Time” to the column “Time (sec)”.<br />
-The function”rename” is used to change the name of the column in the
-following way: “new_name=old_name”. <strong>This might be changed with a
-user input command to choose the desired name</strong></li>
-</ol>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gcmVuYW1lKGRmLCBUaW1lPSdUaW1lXyhzZWMpJylcbmhlYWQoZGYpXG5gYGAifQ== -->
-<pre class="r"><code>df &lt;- rename(df, Time=&#39;Time_(sec)&#39;)
-head(df)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<ol start="3" style="list-style-type: decimal">
-<li>Tidy the data.<br />
-All the value data for every sample are attributed to a single
-column.<br />
-The function pivot_longer is used with the following arguments:<br />
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
 
-<ul>
-<li>‘cols = -c(id, Time)’ exclude (with the ‘-’ character) the columns
-id and Time from being modified.<br />
-</li>
-<li>‘names_to = “Sample”’ Creates a column with a header ‘Sample’
-containing character string.<br />
-</li>
-<li>‘values_to = “Value”’ Creates a column with a header ‘Value’
-containing numerical values.</li>
-</ul></li>
-</ol>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGZfdGlkeSA8LSBwaXZvdF9sb25nZXIoZGYsIFxuICAgICAgICAgICAgICAgICAgICAgICAgY29scyA9IC1jKGlkLCBUaW1lKSxcbiAgICAgICAgICAgICAgICAgICAgICAgIG5hbWVzX3RvID0gXCJTYW1wbGVcIixcbiAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlc190byA9IFwiVmFsdWVcIilcbmhlYWQoZGZfdGlkeSlcbmBgYCJ9 -->
-<pre class="r"><code>df_tidy &lt;- pivot_longer(df, 
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+2.  Setting up the &#39;Here&#39; package.
+
+The function &quot;here()&quot; is used to declare the location of the current script as the root for the project folder.\
+*As a consequence, no absolute path will be required anymore and the Notebook can be used on any machine given that the folder structure is respected).*\
+More info can be found at: [here](https://here.r-lib.org/articles/here.html)
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuaGVyZTo6aV9hbShcXFByZWxpbWluYXJ5X1Bsb3RUd2lzdF9saWtlLlJcXClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+here::i_am(\Preliminary_PlotTwist_like.R\)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+3.  Include session information.
+
+It is good practice to include session information
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxueGZ1bjo6c2Vzc2lvbl9pbmZvKClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+xfun::session_info()</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Step 1: Create an object that includes the path to the data files.
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGF0YV9wYXRoIDwtIHBhc3RlKGhlcmUoXFxkYXRhXFwpLCBsaXN0LmZpbGVzKGhlcmUoXFxkYXRhXFwpKSwgc2VwID0gXFwvXFwpXG5oZWFkKGRhdGFfcGF0aClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+data_path &lt;- paste(here(\data\), list.files(here(\data\)), sep = \/\)
+head(data_path)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Step 2: Loading (reading) data &amp; generate a &#39;nested&#39; dataframe (dataframe of dataframes)
+
+The data are loaded from the excel files using the function &quot;readxl&quot;.\
+The loaded data are included in an &quot;R object&quot; named &#39;df_input&#39; using the character: &#39;\&lt;-&#39;.\
+In addition, the first lanes of the object are visualized using the function &quot;head&quot;.\
+*Note: df stands for dataframe (type of data loaded)*
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGZfaW5wdXQgPC0gbWFwKGRhdGFfcGF0aCwgcmVhZHhsOjpyZWFkX2V4Y2VsKVxuaGVhZChkZl9pbnB1dClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+df_input &lt;- map(data_path, readxl::read_excel)
+head(df_input)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Step 3: Naming the loaded dataframe according to the files names.
+
+This could be changed by a button to specify the desired name
+
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubmFtZXMoZGZfaW5wdXQpIDwtIHN0cl9yZXBsYWNlKGxpc3QuZmlsZXMoaGVyZShcXGRhdGFcXCkpLCBwYXR0ZXJuID0gXFwueGxzeFxcLCByZXBsYWNlbWVudCA9IFxcXFwpXG5oZWFkKGRmX2lucHV0KVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+names(df_input) &lt;- str_replace(list.files(here(\data\)), pattern = \.xlsx\, replacement = \\)
+head(df_input)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Step4: Merge the dataframes.
+
+A single dataframe with all data is generated.  
+A new column named &#39;id&#39; is created to keep the origin of the date (initial filename).  
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGYgPC0gYmluZF9yb3dzKGRmX2lucHV0LCAuaWQgPSAnaWQnKVxuaGVhZChkZilcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+df &lt;- bind_rows(df_input, .id = &#39;id&#39;)
+head(df)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Step5: Reshaping data to tidy format
+
+1.  Remove empty space in data frame and replace it by an underscore.\
+    The function &quot;str_replace&quot; is used to replace a character string with another one.\
+    Here the space &#39; &#39; is replaced by underscore &#39;\_&#39; with the arguments &quot;pattern =&quot; and &quot;replacement =&quot;.
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxubmFtZXMoZGYpIDwtIHN0cl9yZXBsYWNlKG5hbWVzKGRmKSwgcGF0dGVybiA9IFxcIFxcLCByZXBsYWNlbWVudCA9IFxcX1xcKVxuaGVhZChkZilcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+names(df) &lt;- str_replace(names(df), pattern = \ \, replacement = \_\)
+head(df)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+2.  Give the generic name &quot;Time&quot; to the column &quot;Time (sec)&quot;.\
+    The function&quot;rename&quot; is used to change the name of the column in the following way: &quot;new_name=old_name&quot;.
+    **This might be changed with a user input command to choose the desired name**
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGYgPC0gcmVuYW1lKGRmLCBUaW1lPSdUaW1lXyhzZWMpJylcbmhlYWQoZGYpXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+df &lt;- rename(df, Time=&#39;Time_(sec)&#39;)
+head(df)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+3.  Tidy the data.\
+    All the value data for every sample are attributed to a single column.\
+    The function pivot_longer is used with the following arguments:\
+    -   &#39;cols = -c(id, Time)&#39; exclude (with the &#39;-&#39; character) the columns id and Time from being modified.\
+    -   &#39;names_to = &quot;Sample&quot;&#39; Creates a column with a header &#39;Sample&#39; containing character string.\
+    -   &#39;values_to = &quot;Value&quot;&#39; Creates a column with a header &#39;Value&#39; containing numerical values.
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZGZfdGlkeSA8LSBwaXZvdF9sb25nZXIoZGYsIFxuICAgICAgICAgICAgICAgICAgICAgICAgY29scyA9IC1jKGlkLCBUaW1lKSxcbiAgICAgICAgICAgICAgICAgICAgICAgIG5hbWVzX3RvID0gXFxTYW1wbGVcXCxcbiAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlc190byA9IFxcVmFsdWVcXClcbmhlYWQoZGZfdGlkeSlcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+df_tidy &lt;- pivot_longer(df, 
                         cols = -c(id, Time),
-                        names_to = &quot;Sample&quot;,
-                        values_to = &quot;Value&quot;)
+                        names_to = \Sample\,
+                        values_to = \Value\)
 head(df_tidy)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-</div>
-<div id="step3-generate-plot-using-ggplot." class="section level3">
-<h3>Step3: Generate plot using ggplot.</h3>
-<p>This uses the function ggplot function with the following
-arguments</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZ2dwbG90KGRhdGEgPSBkZl90aWR5LFxuICAgICAgIGFlcyh4PVRpbWUsIFxuICAgICAgICAgICB5PVZhbHVlLCBcbiAgICAgICAgICAgZ3JvdXA9aWQpKSArIGdlb21fbGluZShhZXMoY29sb3I9U2FtcGxlKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSBcIm5vbmVcIilcblxuYGBgIn0= -->
-<pre class="r"><code>ggplot(data = df_tidy,
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+### Step3: Generate plot using ggplot.
+
+This uses the function ggplot function with the following arguments
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuZ2dwbG90KGRhdGEgPSBkZl90aWR5LFxuICAgICAgIGFlcyh4PVRpbWUsIFxuICAgICAgICAgICB5PVZhbHVlLCBcbiAgICAgICAgICAgZ3JvdXA9aWQpKSArIGdlb21fbGluZShhZXMoY29sb3I9U2FtcGxlKSkgKyB0aGVtZShsZWdlbmQucG9zaXRpb24gPSBcXG5vbmVcXClcblxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+ggplot(data = df_tidy,
        aes(x=Time, 
            y=Value, 
-           group=id)) + geom_line(aes(color=Sample)) + theme(legend.position = &quot;none&quot;)
+           group=id)) + geom_line(aes(color=Sample)) + theme(legend.position = \none\)
 </code></pre>
+<p>```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBsb3R0aW5nIFRpbWUgU2VyaWVzIERhdGEgZnJvbSBzZXZlcmFsIGZpbGVzIg0KYXV0aG9yOiAiQWxleGFuZHJlIEJva2hvYnphIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KKipBaW0qKjogQ3JlYXRlIGEgZmlndXJlIHBhbmVsIGZvciBwbG90dGluZyBjb250aW51b3VzIGRhdGEuXA0KV29ya3MgZm9yIHBsb3R0aW5nIFRpbWUgc2VyaWVzIGRhdGEgZnJvbSBzZXZlcmFsIGRhdGEgZmlsZSAoZXhjZWwgdGFibGUpLg0KDQoqKkNvbnRhY3QqKjogW2FsZXhhbmRyZS5ib2tob2J6YVxAZ21haWwuY29tXShtYWlsdG86YWxleGFuZHJlLmJva2hvYnphQGdtYWlsLmNvbSl7LmVtYWlsfQ0KDQoqKlJlZmVyZW5jZSB1c2VkIGZvciBjcmVhdGluZyB0aGlzIG5vdGVib29rKio6IEdvZWRoYXJ0LCBKLiAoMjAyMikgRGF0YVZpeiBwcm90b2NvbHMgLSBBbiBpbnRyb2R1Y3Rpb24gdG8gZGF0YSB2aXN1YWxpemF0aW9uIHByb3RvY29scyBmb3Igd2V0IGxhYiBzY2llbnRpc3RzLCBkb2k6IFsxMC41MjgxL3plbm9kby43MjU3ODA4XShodHRwczovL3plbm9kby5vcmcvcmVjb3JkLzcyNTc4MDgjLlk2TGFKWGJNSVE4KQ0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KIyMjIFByZXBhcmF0aW9uIHN0ZXBzLg0KDQoxLiAgTG9hZGluZyBvZiB0aGUgcmVxdWlyZWQgcGFja2FnZXMuDQoNClRoZSBwYWNrYWdlcyBhcmUgbG9hZGVkIHVzaW5nIHRoZSBmdW5jdGlvbiAibGlicmFyeSIuDQoNCipOb3RlOiBUbyBpbnN0YWxsIHBhY2thZ2VzLCB1c2UgdGhlIGZvbGxvd2luZyBmdW5jdGlvbjogImluc3RhbGwucGFja2FnZXMoJ25hbWVfb2ZfcGFja2FnZScpIioNCg0KYGBge3J9DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoaGVyZSkNCmBgYA0KDQoyLiAgU2V0dGluZyB1cCB0aGUgJ0hlcmUnIHBhY2thZ2UuDQoNClRoZSBmdW5jdGlvbiAiaGVyZSgpIiBpcyB1c2VkIHRvIGRlY2xhcmUgdGhlIGxvY2F0aW9uIG9mIHRoZSBjdXJyZW50IHNjcmlwdCBhcyB0aGUgcm9vdCBmb3IgdGhlIHByb2plY3QgZm9sZGVyLlwNCipBcyBhIGNvbnNlcXVlbmNlLCBubyBhYnNvbHV0ZSBwYXRoIHdpbGwgYmUgcmVxdWlyZWQgYW55bW9yZSBhbmQgdGhlIE5vdGVib29rIGNhbiBiZSB1c2VkIG9uIGFueSBtYWNoaW5lIGdpdmVuIHRoYXQgdGhlIGZvbGRlciBzdHJ1Y3R1cmUgaXMgcmVzcGVjdGVkKS4qXA0KTW9yZSBpbmZvIGNhbiBiZSBmb3VuZCBhdDogW2hlcmVdKGh0dHBzOi8vaGVyZS5yLWxpYi5vcmcvYXJ0aWNsZXMvaGVyZS5odG1sKQ0KDQpgYGB7cn0NCmhlcmU6OmlfYW0oIlByZWxpbWluYXJ5X1Bsb3RUd2lzdF9saWtlLlIiKQ0KYGBgDQoNCjMuICBJbmNsdWRlIHNlc3Npb24gaW5mb3JtYXRpb24uDQoNCkl0IGlzIGdvb2QgcHJhY3RpY2UgdG8gaW5jbHVkZSBzZXNzaW9uIGluZm9ybWF0aW9uDQoNCmBgYHtyfQ0KeGZ1bjo6c2Vzc2lvbl9pbmZvKCkNCmBgYA0KDQojIyMgU3RlcCAxOiBDcmVhdGUgYW4gb2JqZWN0IHRoYXQgaW5jbHVkZXMgdGhlIHBhdGggdG8gdGhlIGRhdGEgZmlsZXMuDQoNCmBgYHtyfQ0KZGF0YV9wYXRoIDwtIHBhc3RlKGhlcmUoImRhdGEiKSwgbGlzdC5maWxlcyhoZXJlKCJkYXRhIikpLCBzZXAgPSAiLyIpDQpoZWFkKGRhdGFfcGF0aCkNCmBgYA0KDQojIyMgU3RlcCAyOiBMb2FkaW5nIChyZWFkaW5nKSBkYXRhICYgZ2VuZXJhdGUgYSAnbmVzdGVkJyBkYXRhZnJhbWUgKGRhdGFmcmFtZSBvZiBkYXRhZnJhbWVzKQ0KDQpUaGUgZGF0YSBhcmUgbG9hZGVkIGZyb20gdGhlIGV4Y2VsIGZpbGVzIHVzaW5nIHRoZSBmdW5jdGlvbiAicmVhZHhsIi5cDQpUaGUgbG9hZGVkIGRhdGEgYXJlIGluY2x1ZGVkIGluIGFuICJSIG9iamVjdCIgbmFtZWQgJ2RmX2lucHV0JyB1c2luZyB0aGUgY2hhcmFjdGVyOiAnXDwtJy5cDQpJbiBhZGRpdGlvbiwgdGhlIGZpcnN0IGxhbmVzIG9mIHRoZSBvYmplY3QgYXJlIHZpc3VhbGl6ZWQgdXNpbmcgdGhlIGZ1bmN0aW9uICJoZWFkIi5cDQoqTm90ZTogZGYgc3RhbmRzIGZvciBkYXRhZnJhbWUgKHR5cGUgb2YgZGF0YSBsb2FkZWQpKg0KDQpgYGB7cn0NCmRmX2lucHV0IDwtIG1hcChkYXRhX3BhdGgsIHJlYWR4bDo6cmVhZF9leGNlbCkNCmhlYWQoZGZfaW5wdXQpDQpgYGANCg0KIyMjIFN0ZXAgMzogTmFtaW5nIHRoZSBsb2FkZWQgZGF0YWZyYW1lIGFjY29yZGluZyB0byB0aGUgZmlsZXMgbmFtZXMuDQoNClRoaXMgY291bGQgYmUgY2hhbmdlZCBieSBhIGJ1dHRvbiB0byBzcGVjaWZ5IHRoZSBkZXNpcmVkIG5hbWUNCg0KDQpgYGB7cn0NCm5hbWVzKGRmX2lucHV0KSA8LSBzdHJfcmVwbGFjZShsaXN0LmZpbGVzKGhlcmUoImRhdGEiKSksIHBhdHRlcm4gPSAiLnhsc3giLCByZXBsYWNlbWVudCA9ICIiKQ0KaGVhZChkZl9pbnB1dCkNCmBgYA0KDQojIyMgU3RlcDQ6IE1lcmdlIHRoZSBkYXRhZnJhbWVzLg0KDQpBIHNpbmdsZSBkYXRhZnJhbWUgd2l0aCBhbGwgZGF0YSBpcyBnZW5lcmF0ZWQuICANCkEgbmV3IGNvbHVtbiBuYW1lZCAnaWQnIGlzIGNyZWF0ZWQgdG8ga2VlcCB0aGUgb3JpZ2luIG9mIHRoZSBkYXRlIChpbml0aWFsIGZpbGVuYW1lKS4gIA0KYGBge3J9DQpkZiA8LSBiaW5kX3Jvd3MoZGZfaW5wdXQsIC5pZCA9ICdpZCcpDQpoZWFkKGRmKQ0KYGBgDQoNCiMjIyBTdGVwNTogUmVzaGFwaW5nIGRhdGEgdG8gdGlkeSBmb3JtYXQNCg0KMS4gIFJlbW92ZSBlbXB0eSBzcGFjZSBpbiBkYXRhIGZyYW1lIGFuZCByZXBsYWNlIGl0IGJ5IGFuIHVuZGVyc2NvcmUuXA0KICAgIFRoZSBmdW5jdGlvbiAic3RyX3JlcGxhY2UiIGlzIHVzZWQgdG8gcmVwbGFjZSBhIGNoYXJhY3RlciBzdHJpbmcgd2l0aCBhbm90aGVyIG9uZS5cDQogICAgSGVyZSB0aGUgc3BhY2UgJyAnIGlzIHJlcGxhY2VkIGJ5IHVuZGVyc2NvcmUgJ1xfJyB3aXRoIHRoZSBhcmd1bWVudHMgInBhdHRlcm4gPSIgYW5kICJyZXBsYWNlbWVudCA9Ii4NCg0KYGBge3J9DQpuYW1lcyhkZikgPC0gc3RyX3JlcGxhY2UobmFtZXMoZGYpLCBwYXR0ZXJuID0gIiAiLCByZXBsYWNlbWVudCA9ICJfIikNCmhlYWQoZGYpDQpgYGANCg0KMi4gIEdpdmUgdGhlIGdlbmVyaWMgbmFtZSAiVGltZSIgdG8gdGhlIGNvbHVtbiAiVGltZSAoc2VjKSIuXA0KICAgIFRoZSBmdW5jdGlvbiJyZW5hbWUiIGlzIHVzZWQgdG8gY2hhbmdlIHRoZSBuYW1lIG9mIHRoZSBjb2x1bW4gaW4gdGhlIGZvbGxvd2luZyB3YXk6ICJuZXdfbmFtZT1vbGRfbmFtZSIuDQogICAgKipUaGlzIG1pZ2h0IGJlIGNoYW5nZWQgd2l0aCBhIHVzZXIgaW5wdXQgY29tbWFuZCB0byBjaG9vc2UgdGhlIGRlc2lyZWQgbmFtZSoqDQoNCmBgYHtyfQ0KZGYgPC0gcmVuYW1lKGRmLCBUaW1lPSdUaW1lXyhzZWMpJykNCmhlYWQoZGYpDQpgYGANCg0KMy4gIFRpZHkgdGhlIGRhdGEuXA0KICAgIEFsbCB0aGUgdmFsdWUgZGF0YSBmb3IgZXZlcnkgc2FtcGxlIGFyZSBhdHRyaWJ1dGVkIHRvIGEgc2luZ2xlIGNvbHVtbi5cDQogICAgVGhlIGZ1bmN0aW9uIHBpdm90X2xvbmdlciBpcyB1c2VkIHdpdGggdGhlIGZvbGxvd2luZyBhcmd1bWVudHM6XA0KICAgIC0gICAnY29scyA9IC1jKGlkLCBUaW1lKScgZXhjbHVkZSAod2l0aCB0aGUgJy0nIGNoYXJhY3RlcikgdGhlIGNvbHVtbnMgaWQgYW5kIFRpbWUgZnJvbSBiZWluZyBtb2RpZmllZC5cDQogICAgLSAgICduYW1lc190byA9ICJTYW1wbGUiJyBDcmVhdGVzIGEgY29sdW1uIHdpdGggYSBoZWFkZXIgJ1NhbXBsZScgY29udGFpbmluZyBjaGFyYWN0ZXIgc3RyaW5nLlwNCiAgICAtICAgJ3ZhbHVlc190byA9ICJWYWx1ZSInIENyZWF0ZXMgYSBjb2x1bW4gd2l0aCBhIGhlYWRlciAnVmFsdWUnIGNvbnRhaW5pbmcgbnVtZXJpY2FsIHZhbHVlcy4NCg0KYGBge3J9DQpkZl90aWR5IDwtIHBpdm90X2xvbmdlcihkZiwgDQogICAgICAgICAgICAgICAgICAgICAgICBjb2xzID0gLWMoaWQsIFRpbWUpLA0KICAgICAgICAgICAgICAgICAgICAgICAgbmFtZXNfdG8gPSAiU2FtcGxlIiwNCiAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlc190byA9ICJWYWx1ZSIpDQpoZWFkKGRmX3RpZHkpDQpgYGANCg0KIyMjIFN0ZXAzOiBHZW5lcmF0ZSBwbG90IHVzaW5nIGdncGxvdC4NCg0KVGhpcyB1c2VzIHRoZSBmdW5jdGlvbiBnZ3Bsb3QgZnVuY3Rpb24gd2l0aCB0aGUgZm9sbG93aW5nIGFyZ3VtZW50cw0KDQpgYGB7cn0NCmdncGxvdChkYXRhID0gZGZfdGlkeSwNCiAgICAgICBhZXMoeD1UaW1lLCANCiAgICAgICAgICAgeT1WYWx1ZSwgDQogICAgICAgICAgIGdyb3VwPWlkKSkgKyBnZW9tX2xpbmUoYWVzKGNvbG9yPVNhbXBsZSkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKQ0KDQpgYGANCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlBsb3R0aW5nIFRpbWUgU2VyaWVzIERhdGEgZnJvbSBzZXZlcmFsIGZpbGVzIg0KYXV0aG9yOiAiQWxleGFuZHJlIEJva2hvYnphIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KKipBaW0qKjogQ3JlYXRlIGEgZmlndXJlIHBhbmVsIGZvciBwbG90dGluZyBjb250aW51b3VzIGRhdGEgKHRpbWUgc2VyaWVzKS5cDQpXb3JrcyBmb3IgcGxvdHRpbmcgVGltZSBzZXJpZXMgZGF0YSBmcm9tIHNldmVyYWwgZGF0YSBmaWxlIChleGNlbCB0YWJsZSkuDQoNCioqQ29udGFjdCoqOiBbYWxleGFuZHJlLmJva2hvYnphXEBnbWFpbC5jb21dKG1haWx0bzphbGV4YW5kcmUuYm9raG9iemFAZ21haWwuY29tKXsuZW1haWx9DQoNCioqUmVmZXJlbmNlIHVzZWQgZm9yIGNyZWF0aW5nIHRoaXMgbm90ZWJvb2sqKjogR29lZGhhcnQsIEouICgyMDIyKSBEYXRhVml6IHByb3RvY29scyAtIEFuIGludHJvZHVjdGlvbiB0byBkYXRhIHZpc3VhbGl6YXRpb24gcHJvdG9jb2xzIGZvciB3ZXQgbGFiIHNjaWVudGlzdHMsIGRvaTogWzEwLjUyODEvemVub2RvLjcyNTc4MDhdKGh0dHBzOi8vemVub2RvLm9yZy9yZWNvcmQvNzI1NzgwOCMuWTZMYUpYYk1JUTgpDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KIyMjIEltcG9ydGFudCBub3RlOg0KDQpGb3IgdGhlIG5vdGVib29rIHRvIHdvcmsgeW91IG5lZWQgdG8gaGF2ZSB5b3VyIHJvb3QgZm9sZGVyIHN0cnVjdHVyZWQgYXMgZm9sbG93Og0KDQpgYGBge3IgZWNobyA9IEZBTFNFfQ0KZGlyX3RyZWUocGF0aCA9ICIuIiwgdHlwZSA9ICdkaXJlY3RvcnknLCByZWN1cnNlID0gVFJVRSkNCmBgYGANCg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KIyMjIFByZXBhcmF0aW9uIHN0ZXBzLg0KDQoxLiAgTG9hZGluZyBvZiB0aGUgcmVxdWlyZWQgcGFja2FnZXMuDQoNClRoZSBwYWNrYWdlcyBhcmUgbG9hZGVkIHVzaW5nIHRoZSBmdW5jdGlvbiAibGlicmFyeSIuDQoNCipOb3RlOiBUbyBpbnN0YWxsIHBhY2thZ2VzLCB1c2UgdGhlIGZvbGxvd2luZyBmdW5jdGlvbjogImluc3RhbGwucGFja2FnZXMoJ25hbWVfb2ZfcGFja2FnZScpIioNCg0KYGBge3J9DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoaGVyZSkNCmBgYA0KDQoyLiAgU2V0dGluZyB1cCB0aGUgJ0hlcmUnIHBhY2thZ2UuDQoNClRoZSBmdW5jdGlvbiAiaGVyZSgpIiBpcyB1c2VkIHRvIGRlY2xhcmUgdGhlIGxvY2F0aW9uIG9mIHRoZSBjdXJyZW50IHNjcmlwdCBhcyB0aGUgcm9vdCBmb3IgdGhlIHByb2plY3QgZm9sZGVyLlwNCipBcyBhIGNvbnNlcXVlbmNlLCBubyBhYnNvbHV0ZSBwYXRoIHdpbGwgYmUgcmVxdWlyZWQgYW55bW9yZSBhbmQgdGhlIE5vdGVib29rIGNhbiBiZSB1c2VkIG9uIGFueSBtYWNoaW5lIGdpdmVuIHRoYXQgdGhlIGZvbGRlciBzdHJ1Y3R1cmUgaXMgcmVzcGVjdGVkKS4qXA0KTW9yZSBpbmZvIGNhbiBiZSBmb3VuZCBhdDogW2hlcmVdKGh0dHBzOi8vaGVyZS5yLWxpYi5vcmcvYXJ0aWNsZXMvaGVyZS5odG1sKQ0KDQpgYGB7cn0NCmhlcmU6OmlfYW0oIlByZWxpbWluYXJ5X1Bsb3RUd2lzdF9saWtlLlIiKQ0KYGBgDQoNCjMuICBJbmNsdWRlIHNlc3Npb24gaW5mb3JtYXRpb24uDQoNCkl0IGlzIGdvb2QgcHJhY3RpY2UgdG8gaW5jbHVkZSBzZXNzaW9uIGluZm9ybWF0aW9uDQoNCmBgYHtyfQ0KeGZ1bjo6c2Vzc2lvbl9pbmZvKCkNCmBgYA0KDQojIyMgU3RlcCAxOiBDcmVhdGUgYW4gb2JqZWN0IHRoYXQgaW5jbHVkZXMgdGhlIHBhdGggdG8gdGhlIGRhdGEgZmlsZXMuDQoNCmBgYHtyfQ0KZGF0YV9wYXRoIDwtIHBhc3RlKGhlcmUoImRhdGEiKSwgbGlzdC5maWxlcyhoZXJlKCJkYXRhIikpLCBzZXAgPSAiLyIpDQpoZWFkKGRhdGFfcGF0aCkNCmBgYA0KDQojIyMgU3RlcCAyOiBMb2FkaW5nIChyZWFkaW5nKSBkYXRhICYgZ2VuZXJhdGUgYSAnbmVzdGVkJyBkYXRhZnJhbWUgKGRhdGFmcmFtZSBvZiBkYXRhZnJhbWVzKQ0KDQpUaGUgZGF0YSBhcmUgbG9hZGVkIGZyb20gdGhlIGV4Y2VsIGZpbGVzIHVzaW5nIHRoZSBmdW5jdGlvbiAicmVhZHhsIi5cDQpUaGUgbG9hZGVkIGRhdGEgYXJlIGluY2x1ZGVkIGluIGFuICJSIG9iamVjdCIgbmFtZWQgJ2RmX2lucHV0JyB1c2luZyB0aGUgY2hhcmFjdGVyOiAnXDwtJy5cDQpJbiBhZGRpdGlvbiwgdGhlIGZpcnN0IGxhbmVzIG9mIHRoZSBvYmplY3QgYXJlIHZpc3VhbGl6ZWQgdXNpbmcgdGhlIGZ1bmN0aW9uICJoZWFkIi5cDQoqTm90ZTogZGYgc3RhbmRzIGZvciBkYXRhZnJhbWUgKHR5cGUgb2YgZGF0YSBsb2FkZWQpKg0KDQpgYGB7cn0NCmRmX2lucHV0IDwtIG1hcChkYXRhX3BhdGgsIHJlYWR4bDo6cmVhZF9leGNlbCkNCmhlYWQoZGZfaW5wdXQpDQpgYGANCg0KIyMjIFN0ZXAgMzogTmFtaW5nIHRoZSBsb2FkZWQgZGF0YWZyYW1lIGFjY29yZGluZyB0byB0aGUgZmlsZXMgbmFtZXMuDQoNClRoaXMgY291bGQgYmUgY2hhbmdlZCBieSBhIGJ1dHRvbiB0byBzcGVjaWZ5IHRoZSBkZXNpcmVkIG5hbWUNCg0KDQpgYGB7cn0NCm5hbWVzKGRmX2lucHV0KSA8LSBzdHJfcmVwbGFjZShsaXN0LmZpbGVzKGhlcmUoImRhdGEiKSksIHBhdHRlcm4gPSAiLnhsc3giLCByZXBsYWNlbWVudCA9ICIiKQ0KaGVhZChkZl9pbnB1dCkNCmBgYA0KDQojIyMgU3RlcDQ6IE1lcmdlIHRoZSBkYXRhZnJhbWVzLg0KDQpBIHNpbmdsZSBkYXRhZnJhbWUgd2l0aCBhbGwgZGF0YSBpcyBnZW5lcmF0ZWQuICANCkEgbmV3IGNvbHVtbiBuYW1lZCAnaWQnIGlzIGNyZWF0ZWQgdG8ga2VlcCB0aGUgb3JpZ2luIG9mIHRoZSBkYXRlIChpbml0aWFsIGZpbGVuYW1lKS4gIA0KYGBge3J9DQpkZiA8LSBiaW5kX3Jvd3MoZGZfaW5wdXQsIC5pZCA9ICdpZCcpDQpoZWFkKGRmKQ0KYGBgDQoNCiMjIyBTdGVwNTogUmVzaGFwaW5nIGRhdGEgdG8gdGlkeSBmb3JtYXQNCg0KMS4gIFJlbW92ZSBlbXB0eSBzcGFjZSBpbiBkYXRhIGZyYW1lIGFuZCByZXBsYWNlIGl0IGJ5IGFuIHVuZGVyc2NvcmUuXA0KICAgIFRoZSBmdW5jdGlvbiAic3RyX3JlcGxhY2UiIGlzIHVzZWQgdG8gcmVwbGFjZSBhIGNoYXJhY3RlciBzdHJpbmcgd2l0aCBhbm90aGVyIG9uZS5cDQogICAgSGVyZSB0aGUgc3BhY2UgJyAnIGlzIHJlcGxhY2VkIGJ5IHVuZGVyc2NvcmUgJ1xfJyB3aXRoIHRoZSBhcmd1bWVudHMgInBhdHRlcm4gPSIgYW5kICJyZXBsYWNlbWVudCA9Ii4NCg0KYGBge3J9DQpuYW1lcyhkZikgPC0gc3RyX3JlcGxhY2UobmFtZXMoZGYpLCBwYXR0ZXJuID0gIiAiLCByZXBsYWNlbWVudCA9ICJfIikNCmhlYWQoZGYpDQpgYGANCg0KMi4gIEdpdmUgdGhlIGdlbmVyaWMgbmFtZSAiVGltZSIgdG8gdGhlIGNvbHVtbiAiVGltZSAoc2VjKSIuXA0KICAgIFRoZSBmdW5jdGlvbiJyZW5hbWUiIGlzIHVzZWQgdG8gY2hhbmdlIHRoZSBuYW1lIG9mIHRoZSBjb2x1bW4gaW4gdGhlIGZvbGxvd2luZyB3YXk6ICJuZXdfbmFtZT1vbGRfbmFtZSIuDQogICAgKipUaGlzIG1pZ2h0IGJlIGNoYW5nZWQgd2l0aCBhIHVzZXIgaW5wdXQgY29tbWFuZCB0byBjaG9vc2UgdGhlIGRlc2lyZWQgbmFtZSoqDQoNCmBgYHtyfQ0KZGYgPC0gcmVuYW1lKGRmLCBUaW1lPSdUaW1lXyhzZWMpJykNCmhlYWQoZGYpDQpgYGANCg0KMy4gIFRpZHkgdGhlIGRhdGEuXA0KICAgIEFsbCB0aGUgdmFsdWUgZGF0YSBmb3IgZXZlcnkgc2FtcGxlIGFyZSBhdHRyaWJ1dGVkIHRvIGEgc2luZ2xlIGNvbHVtbi5cDQogICAgVGhlIGZ1bmN0aW9uIHBpdm90X2xvbmdlciBpcyB1c2VkIHdpdGggdGhlIGZvbGxvd2luZyBhcmd1bWVudHM6XA0KICAgIC0gICAnY29scyA9IC1jKGlkLCBUaW1lKScgZXhjbHVkZSAod2l0aCB0aGUgJy0nIGNoYXJhY3RlcikgdGhlIGNvbHVtbnMgaWQgYW5kIFRpbWUgZnJvbSBiZWluZyBtb2RpZmllZC5cDQogICAgLSAgICduYW1lc190byA9ICJTYW1wbGUiJyBDcmVhdGVzIGEgY29sdW1uIHdpdGggYSBoZWFkZXIgJ1NhbXBsZScgY29udGFpbmluZyBjaGFyYWN0ZXIgc3RyaW5nLlwNCiAgICAtICAgJ3ZhbHVlc190byA9ICJWYWx1ZSInIENyZWF0ZXMgYSBjb2x1bW4gd2l0aCBhIGhlYWRlciAnVmFsdWUnIGNvbnRhaW5pbmcgbnVtZXJpY2FsIHZhbHVlcy4NCg0KYGBge3J9DQpkZl90aWR5IDwtIHBpdm90X2xvbmdlcihkZiwgDQogICAgICAgICAgICAgICAgICAgICAgICBjb2xzID0gLWMoaWQsIFRpbWUpLA0KICAgICAgICAgICAgICAgICAgICAgICAgbmFtZXNfdG8gPSAiU2FtcGxlIiwNCiAgICAgICAgICAgICAgICAgICAgICAgIHZhbHVlc190byA9ICJWYWx1ZSIpDQpoZWFkKGRmX3RpZHkpDQpgYGANCg0KIyMjIFN0ZXAzOiBHZW5lcmF0ZSBwbG90IHVzaW5nIGdncGxvdC4NCg0KVGhpcyB1c2VzIHRoZSBmdW5jdGlvbiBnZ3Bsb3QgZnVuY3Rpb24gd2l0aCB0aGUgZm9sbG93aW5nIGFyZ3VtZW50cw0KDQpgYGB7cn0NCmdncGxvdChkYXRhID0gZGZfdGlkeSwNCiAgICAgICBhZXMoeD1UaW1lLCANCiAgICAgICAgICAgeT1WYWx1ZSwgDQogICAgICAgICAgIGdyb3VwPWlkKSkgKyBnZW9tX2xpbmUoYWVzKGNvbG9yPVNhbXBsZSkpICsgdGhlbWUobGVnZW5kLnBvc2l0aW9uID0gIm5vbmUiKQ0KDQpgYGANCg==</div>
 
 
 

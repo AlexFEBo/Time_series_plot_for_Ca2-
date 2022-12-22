@@ -4,12 +4,22 @@ author: "Alexandre Bokhobza"
 output: html_notebook
 ---
 
-**Aim**: Create a figure panel for plotting continuous data.\
+**Aim**: Create a figure panel for plotting continuous data (time series).\
 Works for plotting Time series data from several data file (excel table).
 
 **Contact**: [alexandre.bokhobza\@gmail.com](mailto:alexandre.bokhobza@gmail.com){.email}
 
 **Reference used for creating this notebook**: Goedhart, J. (2022) DataViz protocols - An introduction to data visualization protocols for wet lab scientists, doi: [10.5281/zenodo.7257808](https://zenodo.org/record/7257808#.Y6LaJXbMIQ8)
+
+------------------------------------------------------------------------
+### Important note:
+
+For the notebook to work you need to have your root folder structured as follow:
+
+````{r echo = FALSE}
+dir_tree(path = ".", type = 'directory', recurse = TRUE)
+````
+
 
 ------------------------------------------------------------------------
 
