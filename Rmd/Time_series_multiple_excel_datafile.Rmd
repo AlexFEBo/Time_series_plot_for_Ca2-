@@ -144,3 +144,6 @@ ggplot(data = df_tidy,
            group=id)) + geom_line(aes(color=Sample)) + theme(legend.position = "none")
 
 ```
+
+
+Add option to the graph (change display) + save image
